@@ -25,9 +25,12 @@ defmodule HubIdentityElixir.Phoenix.ProviderController do
          {:ok, session_params, refresh_token} <- HubIdentity.parse_tokens(tokens) do
       conn
       |> fetch_session()
-      |> update_session(session_params)
+      |> put_session(:owner_uid, session_params[:owner_uid])
+      |> put_session(:owner_type, session_params[:owner_type])
+      |> put_session(:user_type, session_params[:user_type])
+      |> put_session(:uid, session_params[:uid])
       |> put_session(:refresh_token, refresh_token)
-      |> redirect(conn, to: "/")
+      |> redirect(to: "/")
     end
   end
 
@@ -41,10 +44,5 @@ defmodule HubIdentityElixir.Phoenix.ProviderController do
   defp base_module(%Plug.Conn{private: %{phoenix_endpoint: endpoint}}) do
     base = Module.split(endpoint) |> hd()
     String.to_existing_atom("Elixir.#{base}.LayoutView")
-  end
-
-  defp update_session(conn, session_params) do
-    session_params
-    |> Enum.each(fn {key, value} -> put_session(key, value) end)
   end
 end

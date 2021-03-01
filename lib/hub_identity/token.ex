@@ -19,11 +19,15 @@ defmodule HubIdentityElixir.HubIdentity.Token do
   end
 
   defp build_session_params(claims) do
-    %{
-      "owner_type" => owner_type,
-      "owner_uid" => owner_uid,
-      "sub" => subject
-    } = base_jason_decode(claims)
+    {:ok,
+     %{
+       "owner_type" => owner_type,
+       "owner_uid" => owner_uid,
+       "sub" => subject
+     }} = base_jason_decode(claims)
+
+    [user_type, uid] = String.split(subject, ":")
+    {:ok, %{owner_type: owner_type, owner_uid: owner_uid, uid: uid, user_type: user_type}}
   end
 
   defp verify_signature({header, claims}, signature) do
