@@ -11,8 +11,8 @@ defmodule HubIdentityElixir.MixProject do
       deps: deps(),
       description: description(),
       package: package(),
-      name: "Postgrex",
-      source_url: ""
+      name: "HubIdentityElixir",
+      source_url: "https://github.com/ErinHivelociy/hub_identity_elixir"
     ]
   end
 
@@ -26,9 +26,12 @@ defmodule HubIdentityElixir.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ex_doc, "~> 0.19", only: [:dev]},
+      {:gettext, "~> 0.11"},
       {:httpoison, "~> 1.6"},
       {:jason, "~> 1.1"},
-      {:ex_doc, "~> 0.19", only: [:dev]}
+      {:phoenix, "~> 1.5.7"},
+      {:phoenix_html, "~> 2.11"}
     ]
   end
 
@@ -40,7 +43,7 @@ defmodule HubIdentityElixir.MixProject do
     [
       maintainers: ["Erin Boeger"],
       licenses: ["Apache 2.0"],
-      links: %{"GitHub" => ""}
+      links: %{"GitHub" => "https://github.com/ErinHivelociy/hub_identity_elixir"}
     ]
   end
 end

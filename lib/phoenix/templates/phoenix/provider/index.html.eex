@@ -1,0 +1,24 @@
+<img src=<%= "#{@base_url}/images/hubsynch_logo.jpg" %> alt="Hubsynch logo">
+
+<ul style="list-style-type:none;">
+  <%= for provider <- @providers do %>
+    <li><%= link_helper(provider) %></li>
+  <% end %>
+</ul>
+
+<p>Or</p>
+
+<%= form_for @conn, route_helper(@conn, "provider_path", :authenticate), fn f -> %>
+
+  <%= label f, :email %>
+  <%= email_input f, :email, required: true %>
+  <%= error_tag f, :email %>
+
+  <%= label f, :password %>
+  <%= password_input f, :password, required: true %>
+  <%= error_tag f, :password %>
+
+  <div>
+    <%= submit "Login" %>
+  </div>
+<% end %>
