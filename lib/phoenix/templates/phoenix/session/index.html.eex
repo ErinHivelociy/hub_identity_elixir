@@ -2,13 +2,13 @@
 
 <ul style="list-style-type:none;">
   <%= for provider <- @providers do %>
-    <li><%= link_helper(provider) %></li>
+    <li><%= provider_link_helper(provider) %></li>
   <% end %>
 </ul>
 
 <p>Or</p>
 
-<%= form_for @conn, route_helper(@conn, "provider_path", :authenticate), fn f -> %>
+<%= form_for @conn, route_helper(@conn, :session_path, :create), fn f -> %>
 
   <%= label f, :email %>
   <%= email_input f, :email, required: true %>

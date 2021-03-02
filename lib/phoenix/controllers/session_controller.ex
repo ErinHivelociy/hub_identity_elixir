@@ -1,12 +1,12 @@
-defmodule HubIdentityElixir.Phoenix.ProviderController do
+defmodule HubIdentityElixir.Phoenix.SessionController do
   @moduledoc false
   use Phoenix.Controller, namespace: HubIdentityElixir
 
   import Plug.Conn
 
-  alias HubIdentityElixir.HubIdentity
+  alias HubIdentityElixir.{Authentication, HubIdentity}
 
-  def providers(conn, _params) do
+  def new(conn, _params) do
     with {:ok, providers} <- HubIdentity.get_providers() do
       layout = base_module(conn)
 
@@ -19,19 +19,18 @@ defmodule HubIdentityElixir.Phoenix.ProviderController do
     end
   end
 
-  def authenticate(conn, %{"email" => email, "password" => password}) do
-    with {:ok, %{"access_token" => _, "refresh_token" => _} = tokens} <-
+  def create(conn, %{"email" => email, "password" => password}) do
+    with {:ok, %{"access_token" => _} = tokens} <-
            HubIdentity.authenticate(%{email: email, password: password}),
-         {:ok, session_params, refresh_token} <- HubIdentity.parse_tokens(tokens) do
-      conn
-      |> fetch_session()
-      |> put_session(:owner_uid, session_params[:owner_uid])
-      |> put_session(:owner_type, session_params[:owner_type])
-      |> put_session(:user_type, session_params[:user_type])
-      |> put_session(:uid, session_params[:uid])
-      |> put_session(:refresh_token, refresh_token)
-      |> redirect(to: "/")
+         {:ok, current_user} <- HubIdentity.build_current_user(tokens) do
+      Authentication.log_in_user(conn, current_user)
     end
+  end
+
+  def delete(conn, _params) do
+    conn
+    |> put_flash(:info, "Logged out successfully.")
+    |> Authentication.log_out_user()
   end
 
   def registration(conn, %{"email" => email, "password" => password}) do

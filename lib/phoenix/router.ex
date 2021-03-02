@@ -6,6 +6,8 @@ defmodule HubIdentityElixir.Phoenix.Router do
     quote do
       import unquote(__MODULE__),
         only: [hub_identity_routes: 0]
+
+      import HubIdentityElixir.Authentication
     end
   end
 
@@ -21,8 +23,9 @@ defmodule HubIdentityElixir.Phoenix.Router do
   defmacro hub_identity_routes do
     quote do
       scope "/", alias: false, as: false do
-        get("/login", HubIdentityElixir.Phoenix.ProviderController, :providers)
-        post("/login/hub_identity", HubIdentityElixir.Phoenix.ProviderController, :authenticate)
+        delete("/sessions/logout", HubIdentityElixir.Phoenix.SessionController, :delete)
+        get("/sessions/new", HubIdentityElixir.Phoenix.SessionController, :new)
+        post("/sessions/hub_identity", HubIdentityElixir.Phoenix.SessionController, :create)
       end
     end
   end

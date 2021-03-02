@@ -1,7 +1,11 @@
-defmodule HubIdentityElixir.Phoenix.ProviderView do
+defmodule HubIdentityElixir.Phoenix.SessionView do
   # @moduledoc false
   # Use all HTML functionality (forms, tags, etc)
   use Phoenix.HTML
+
+  use Phoenix.View,
+    root: "lib/phoenix/templates",
+    namespace: HubIdentityElixir
 
   # Import basic rendering functionality (render, render_layout, etc)
   import Phoenix.View
@@ -9,7 +13,7 @@ defmodule HubIdentityElixir.Phoenix.ProviderView do
 
   def provider_link_helper(provider) do
     provider["logo_url"]
-    |> img_tag(alt: "#{provider["name"]} authentication link")
+    |> img_tag(alt: "#{provider["name"]} authentication link", width: "380")
     |> link(to: provider["request_url"])
   end
 
