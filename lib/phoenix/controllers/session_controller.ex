@@ -24,6 +24,11 @@ defmodule HubIdentityElixir.Phoenix.SessionController do
            HubIdentity.authenticate(%{email: email, password: password}),
          {:ok, current_user} <- HubIdentity.build_current_user(tokens) do
       Authentication.log_in_user(conn, current_user)
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "Invalid email or password")
+        |> redirect(to: "/sessions/new")
     end
   end
 
@@ -31,13 +36,6 @@ defmodule HubIdentityElixir.Phoenix.SessionController do
     conn
     |> put_flash(:info, "Logged out successfully.")
     |> Authentication.log_out_user()
-  end
-
-  def registration(conn, %{"email" => email, "password" => password}) do
-    # Make register request to HubIdentity
-    # parse response
-    # if sucessful put owner_uid, owner_type, hubidentity user uid, user type into session
-    # return to config return or "/" default
   end
 
   defp base_module(%Plug.Conn{private: %{phoenix_endpoint: endpoint}}) do

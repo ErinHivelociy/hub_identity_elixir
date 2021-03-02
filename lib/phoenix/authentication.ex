@@ -2,9 +2,9 @@ defmodule HubIdentityElixir.Authentication do
   import Plug.Conn
   import Phoenix.Controller
 
-  def fetch_current_user(conn) do
+  def fetch_current_user(conn, _opts) do
     current_user = get_session(conn, :current_user)
-    put_session(conn, :current_user, current_user)
+    assign(conn, :current_user, current_user)
   end
 
   def log_in_user(conn, current_user) do
@@ -71,6 +71,7 @@ defmodule HubIdentityElixir.Authentication do
     conn
     |> configure_session(renew: true)
     |> clear_session()
+    |> assign(:current_user, nil)
   end
 
   defp signed_in_path(_conn), do: "/"

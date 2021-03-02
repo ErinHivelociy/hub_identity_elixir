@@ -4,10 +4,14 @@ defmodule HubIdentityElixir.Phoenix.Router do
 
   defmacro __using__(_opts \\ []) do
     quote do
+      import HubIdentityElixir.Authentication,
+        only: [
+          fetch_current_user: 2,
+          require_authenticated_user: 2
+        ]
+
       import unquote(__MODULE__),
         only: [hub_identity_routes: 0]
-
-      import HubIdentityElixir.Authentication
     end
   end
 
