@@ -2,8 +2,6 @@ defmodule HubIdentityElixir.Phoenix.SessionController do
   @moduledoc false
   use Phoenix.Controller, namespace: HubIdentityElixir
 
-  import Plug.Conn
-
   alias HubIdentityElixir.{Authentication, HubIdentity}
 
   def new(conn, _params) do
