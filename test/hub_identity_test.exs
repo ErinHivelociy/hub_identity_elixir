@@ -41,4 +41,27 @@ defmodule HubIdentityElixir.HubIdentityTest do
       assert 2 == length(providers)
     end
   end
+
+  describe "parse_token/1" do
+    test "returns user params from claims when token is valid" do
+      tokens = HubIdentityElixir.MockServer.tokens()
+
+      assert {:ok, user_params} =
+               HubIdentity.parse_token(%{"access_token" => tokens[:access_token]})
+
+      assert user_params[:uid] == "380549d1-cf9a-4bcb-b671-a2667e8d2301"
+      assert user_params[:user_type] == "Identities.User"
+
+      assert {:ok, user_params} = HubIdentity.parse_token(tokens)
+      assert user_params[:uid] == "380549d1-cf9a-4bcb-b671-a2667e8d2301"
+      assert user_params[:user_type] == "Identities.User"
+    end
+
+    test "returns error when fails" do
+      token =
+        "eyJraWQiOiJvNFhRbVNLTHlLN1I0ejhDUWRLaVNDQVQ4ZmhnWFlNVWRLUUlUU0Rra2xJIiwiYWxnIjoiUlMyNTYiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJodHRwczovL3N0YWdlLWlkZW50aXR5Lmh1YnN5bmNoLmNvbSIsImVtYWlsIjoibm90X2VyaW5AaGl2ZWxvY2l0eS5jby5qcCIsImV4cCI6MTYxNDY1NTQzNSwiaWF0IjoxNjE0NjUxODM1LCJpc3MiOiJIdWJJZGVudGl0eSIsImp0aSI6Ijk0NWZiODk0LTJjYTYtNGQ4Ni1hMTYzLThkZTdhOTNkMTYzYSIsIm5iZiI6MTYxNDY1MTgzNCwib3duZXJfdHlwZSI6bnVsbCwib3duZXJfdWlkIjpudWxsLCJzdWIiOiJJZGVudGl0aWVzLlVzZXI6MzgwNTQ5ZDEtY2Y5YS00YmNiLWI2NzEtYTI2NjdlOGQyMzAxIiwidHlwIjoiYWNjZXNzIiwidWlkIjoiMzgwNTQ5ZDEtY2Y5YS00YmNiLWI2NzEtYTI2NjdlOGQyMzAxIn0.nesXK09oqUIYZWNdphzcA4IbXGaOlMUd_dH_NjprRspBrlNhq4P78ou62bVcBu5vmL3kSqEwXsGDnjJTSApPRn8XvojmC72QG8_Ld2uv3n13alQmTFckq50sLRzqrzJad_oYTpZsjVi2yoHK35H_2BLwKQk5GpkKV6UIB8y7KntsLOZvS1RC5bwIP1paqTP-_bT3N1UnDeWDZkUL-vlfNTinMutOqz_GQGR1wVim4hJ7mEauDgyZxUJR5GiLdTXGLo4-0I1MDfuI3j4CLCvgt1YFgKikfiONZFzFL6vlJY0MwAU6ytGvJKJ1EZqozs4rbhBnLMpe6wCIglvITAXlSw"
+
+      assert {:error, :signature_fail} == HubIdentity.parse_token(%{"access_token" => token})
+    end
+  end
 end

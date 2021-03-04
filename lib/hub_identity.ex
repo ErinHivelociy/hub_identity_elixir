@@ -75,6 +75,29 @@ defmodule HubIdentityElixir.HubIdentity do
   end
 
   @doc """
+  Parse and validate a JWT from HubIdentity.
+  When successful will return an ok tuple with a current_user map.
+
+  ## Examples
+
+      iex> HubIdentityElixir.parse_token(%{"access_token" => access JWT})
+      {:ok, %{
+          owner_type: "Hubsynch.User",
+          owner_uid: "uid_1234",
+          uid: "hub_identity_uid_1234",
+          user_type: "HubIdentity.User"
+        }
+      }
+
+      iex> HubIdentityElixir.parse_token(%{"access_token" => invalid JWT})
+      {:error, :claims_parse_fail}
+
+  """
+  def parse_token(%{"access_token" => access_token}), do: Token.parse(access_token)
+
+  def parse_token(%{access_token: access_token}), do: Token.parse(access_token)
+
+  @doc """
   Get the list of Open Authentication Providers from HubIdentity.
   Remember these links are only good once, and one link. If a users authenticates
   with Google then the facebook link will be invalid.
