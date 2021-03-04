@@ -1,5 +1,5 @@
 defmodule HubIdentityElixir.HubIdentity.Token do
-  alias HubIdentityElixir.HubIdentity.Server
+  alias HubIdentityElixir.HubIdentity
 
   def parse(token) do
     with [header, claims, signature] <- String.split(token, "."),
@@ -39,7 +39,7 @@ defmodule HubIdentityElixir.HubIdentity.Token do
   defp verify_signature({header, claims}, signature) do
     with {:ok, %{"kid" => key_id}} <- base_jason_decode(header),
          {:ok, decoded_signature} <- Base.url_decode64(signature, padding: false),
-         %{"e" => encoded_e, "n" => encoded_n} <- Server.get_certs(key_id),
+         %{"e" => encoded_e, "n" => encoded_n} <- HubIdentity.get_certs(key_id),
          {:ok, e} <- Base.url_decode64(encoded_e, padding: false),
          {:ok, n} <- Base.url_decode64(encoded_n, padding: false) do
       :crypto.verify(:rsa, :sha256, "#{header}.#{claims}", decoded_signature, [e, n])

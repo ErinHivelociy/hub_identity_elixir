@@ -1,6 +1,9 @@
-defmodule HubIdentityElixir.Router do
-  use HubIdentityElixirWeb, :router
+defmodule HubIdentityElixir.TestRouter do
+  use Phoenix.Router
   use HubIdentityElixir.Phoenix.Router
+
+  import Plug.Conn
+  import Phoenix.Controller
 
   pipeline :browser do
     plug(:accepts, ["html"])

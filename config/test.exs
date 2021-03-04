@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :hub_identity_elixir, HubIdentityElixir.Endpoint,
+config :hub_identity_elixir, HubIdentityElixir.TestEndpoint,
   url: [host: "localhost"],
   http: [port: 4002],
   render_errors: [

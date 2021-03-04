@@ -1,5 +1,15 @@
-defmodule HubIdentityElixir.Phoenix.ErrorView do
-  use HubIdentityElixirWeb, :view
+defmodule HubIdentityElixir.ErrorView do
+  use Phoenix.View,
+    root: "lib/phoenix/templates",
+    namespace: HubIdentityElixir
+
+  # Use all HTML functionality (forms, tags, etc)
+  use Phoenix.HTML
+
+  # Import basic rendering functionality (render, render_layout, etc)
+  import Phoenix.View
+
+  import HubIdentityElixir.TestErrorHelpers
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

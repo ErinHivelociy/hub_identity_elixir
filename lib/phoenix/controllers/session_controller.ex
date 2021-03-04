@@ -4,29 +4,18 @@ defmodule HubIdentityElixir.Phoenix.SessionController do
 
   alias HubIdentityElixir.{Authentication, HubIdentity}
 
-  def new(conn, _params) do
-    with {:ok, providers} <- HubIdentity.get_providers() do
-      layout = base_module(conn)
+  @public_key Application.get_env(:hub_identity_elixir, :public_key)
 
-      conn
-      |> put_layout({layout, :app})
-      |> render("index.html",
-        providers: providers,
-        base_url: HubIdentity.hub_identity_url()
-      )
-    end
+  def new(conn, _params) do
+    redirect(
+      conn,
+      external: "#{HubIdentity.hub_identity_url()}/browser/v1/providers?api_key=#{@public_key}"
+    )
   end
 
-  def create(conn, %{"email" => email, "password" => password}) do
-    with {:ok, %{"access_token" => _} = tokens} <-
-           HubIdentity.authenticate(%{email: email, password: password}),
-         {:ok, current_user} <- HubIdentity.build_current_user(tokens) do
+  def create(conn, params) do
+    with {:ok, current_user} <- HubIdentity.build_current_user(params) do
       Authentication.log_in_user(conn, current_user)
-    else
-      _ ->
-        conn
-        |> put_flash(:error, "Invalid email or password")
-        |> redirect(to: "/sessions/new")
     end
   end
 
@@ -34,10 +23,5 @@ defmodule HubIdentityElixir.Phoenix.SessionController do
     conn
     |> put_flash(:info, "Logged out successfully.")
     |> Authentication.log_out_user()
-  end
-
-  defp base_module(%Plug.Conn{private: %{phoenix_endpoint: endpoint}}) do
-    base = Module.split(endpoint) |> hd()
-    String.to_existing_atom("Elixir.#{base}.LayoutView")
   end
 end

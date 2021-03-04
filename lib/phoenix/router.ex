@@ -29,7 +29,7 @@ defmodule HubIdentityElixir.Phoenix.Router do
       scope "/", alias: false, as: false do
         delete("/sessions/logout", HubIdentityElixir.Phoenix.SessionController, :delete)
         get("/sessions/new", HubIdentityElixir.Phoenix.SessionController, :new)
-        post("/sessions/hub_identity", HubIdentityElixir.Phoenix.SessionController, :create)
+        get("/sessions/create", HubIdentityElixir.Phoenix.SessionController, :create)
       end
     end
   end

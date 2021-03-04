@@ -1,4 +1,4 @@
-defmodule HubIdentityElixir.UserSocket do
+defmodule HubIdentityElixir.TestSocket do
   use Phoenix.Socket
 
   ## Channels

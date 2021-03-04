@@ -24,17 +24,6 @@ defmodule HubIdentityElixir.HubIdentity.ServerTest do
     end
   end
 
-  describe "get_certs/1" do
-    test "returns the public key cert with the kid" do
-      cert = Server.get_certs("Z6s25OvX-NulYhm1iKwRX6jkU2AdpOIvNZvYy3WW-oE")
-      assert cert["kid"] == "Z6s25OvX-NulYhm1iKwRX6jkU2AdpOIvNZvYy3WW-oE"
-    end
-
-    test "returns nil if no cert matches the kid" do
-      assert nil == Server.get_certs("RX6jkU2AdpOIvNZvYy3WW-oEZ6s25OvX-NulYhm1iKw")
-    end
-  end
-
   describe "get_providers/0" do
     test "returns current list of providers" do
       assert {:ok, providers} = Server.get_providers()

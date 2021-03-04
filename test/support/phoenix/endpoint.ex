@@ -1,4 +1,4 @@
-defmodule HubIdentityElixir.Endpoint do
+defmodule HubIdentityElixir.TestEndpoint do
   use Phoenix.Endpoint, otp_app: :hub_identity_elixir
 
   # The session will be stored in the cookie and signed,
@@ -10,7 +10,7 @@ defmodule HubIdentityElixir.Endpoint do
     signing_salt: "2/tCVsKQ"
   ]
 
-  socket("/socket", HubIdentityElixir.UserSocket,
+  socket("/socket", HubIdentityElixir.TestSocket,
     websocket: true,
     longpoll: false
   )
@@ -38,5 +38,5 @@ defmodule HubIdentityElixir.Endpoint do
   plug(Plug.MethodOverride)
   plug(Plug.Head)
   plug(Plug.Session, @session_options)
-  plug(HubIdentityElixir.Router)
+  plug(HubIdentityElixir.TestRouter)
 end

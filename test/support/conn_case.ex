@@ -24,10 +24,10 @@ defmodule HubIdentityElixir.ConnCase do
       import Phoenix.ConnTest
       import HubIdentityElixir.ConnCase
 
-      alias HubIdentityElixir.Router.Helpers, as: Routes
+      alias HubIdentityElixir.TestRouter.Helpers, as: Routes
 
       # The default endpoint for testing
-      @endpoint HubIdentityElixir.Endpoint
+      @endpoint HubIdentityElixir.TestEndpoint
     end
   end
 

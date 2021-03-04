@@ -12,6 +12,7 @@ defmodule HubIdentityElixir.Authentication do
 
     conn
     |> renew_session()
+    |> clear_flash()
     |> put_session(:current_user, current_user)
     |> assign(:current_user, current_user)
     |> redirect(to: user_return_to || signed_in_path(conn))

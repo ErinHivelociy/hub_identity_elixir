@@ -1,6 +1,6 @@
 children = [
   {Phoenix.PubSub, name: HubIdentityElixir.PubSub},
-  HubIdentityElixir.Endpoint
+  HubIdentityElixir.TestEndpoint
 ]
 
 opts = [strategy: :one_for_one, name: HubIdentityElixir.Supervisor]

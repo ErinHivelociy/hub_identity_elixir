@@ -14,6 +14,14 @@ defmodule HubIdentityElixir.MockServer do
     end
   end
 
+  # This is a valid set of tokens to test with. The signature will validate with the certs below
+  # The user will be:
+  # %{
+  #   owner_type: nil,
+  #   owner_uid: nil,
+  #   uid: "380549d1-cf9a-4bcb-b671-a2667e8d2301",
+  #   user_type: "Identities.User"
+  # }
   def tokens do
     %{
       access_token:

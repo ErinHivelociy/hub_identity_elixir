@@ -9,6 +9,7 @@ defmodule HubIdentityElixir.HubIdentity do
   Authenticate with HubIdentity using an email and password. This will call the HubIdentity
   server and try to autheniticate.
   Use this method for users who authenticate directly with HubIdentity.
+  Upon successful email and password
 
   ## Examples
 
@@ -20,8 +21,57 @@ defmodule HubIdentityElixir.HubIdentity do
 
   """
 
-  def authenticate(params) do
-    Server.authenticate(params)
+  def authenticate(params), do: Server.authenticate(params)
+
+  @doc """
+  Get the current servers public key certificates. These certificates are used to verify a HubIdentity
+  issued JWT signature. These certificates are rotated on a regular basis. If your website has significant
+  activity, it may make sense to cache and refresh when they expire.
+  Each certificate returned has a timestamp of when the certificate will expire.
+
+  ## Examples
+
+      iex> HubIdentityElixir.get_certs()
+      [
+          {
+              "alg": "RS256",
+              "e": "AQAB",
+              "expires": 1614837416,
+              "kid": "C8Rn3J8tPlMp8etztCsb4k51sjTFXbA-Til9XptF2FM",
+              "kty": "RSA",
+              "n": "really long n",
+              "use": "sig"
+          },
+          ...
+      ]
+
+  """
+  def get_certs, do: Server.get_certs()
+
+  @doc """
+  Get a certificate by a kid. The kid is included with every HubIdentity issued JWT and
+  idetnitifies which certificate was used to generate the certificate.
+
+  ## Examples
+
+      iex> HubIdentityElixir.get_certs("C8Rn3J8tPlMp8etztCsb4k51sjTFXbA-Til9XptF2FM")
+        {
+            "alg": "RS256",
+            "e": "AQAB",
+            "expires": 1614837416,
+            "kid": "C8Rn3J8tPlMp8etztCsb4k51sjTFXbA-Til9XptF2FM",
+            "kty": "RSA",
+            "n": "really long n",
+            "use": "sig"
+        }
+
+      iex> HubIdentityElixir.get_certs("expired or not valid kid")
+      nil
+  """
+
+  def get_certs(key_id) do
+    get_certs()
+    |> Enum.find(fn %{"kid" => kid} -> kid == key_id end)
   end
 
   @doc """
@@ -41,13 +91,9 @@ defmodule HubIdentityElixir.HubIdentity do
           }
       ]
   """
-  def get_providers do
-    Server.get_providers()
-  end
+  def get_providers, do: Server.get_providers()
 
-  def hub_identity_url do
-    Server.base_url()
-  end
+  def hub_identity_url, do: Server.base_url()
 
   def build_current_user(%{"access_token" => access_token, "refresh_token" => refresh_token}) do
     with {:ok, user_params} <- Token.parse(access_token) do

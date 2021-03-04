@@ -1,4 +1,4 @@
-defmodule HubIdentityElixir.Phoenix.ErrorHelpers do
+defmodule HubIdentityElixir.TestErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
