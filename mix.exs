@@ -19,7 +19,7 @@ defmodule HubIdentityElixir.MixProject do
       source_url: "https://github.com/ErinHivelociy/hub_identity_elixir",
       homepage_url: "https://stage-identity.hubsynch.com/",
       # The main page in the docs
-      docs: [main: "HubIdentity", extras: ["README.md"]]
+      docs: [extras: ["README.md"]]
     ]
   end
 
