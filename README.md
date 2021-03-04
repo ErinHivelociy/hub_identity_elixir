@@ -72,4 +72,4 @@ end
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm) at
-[https://hexdocs.pm/hub_identity_elixir](https://hexdocs.pm/hub_identity_elixir).
+[hub_identity_elixir](https://hexdocs.pm/hub_identity_elixir)
