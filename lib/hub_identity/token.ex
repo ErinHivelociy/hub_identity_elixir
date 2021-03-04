@@ -1,4 +1,5 @@
 defmodule HubIdentityElixir.HubIdentity.Token do
+  @moduledoc false
   alias HubIdentityElixir.HubIdentity
 
   def parse(token) do

@@ -1,12 +1,28 @@
 defmodule HubIdentityElixir.Authentication do
+  @moduledoc """
+  The Authentication plug for use with restricted routes.
+  Would like to attribute much of this code to the phx_gen_auth package.
+  https://github.com/aaronrenner/phx_gen_auth
+  Thank you.
+
+  """
   import Plug.Conn
   import Phoenix.Controller
 
+  @doc """
+  Helper method to store the current_user in conn.assigns for easy use
+  in views etc.
+  """
   def fetch_current_user(conn, _opts) do
     current_user = get_session(conn, :current_user)
     assign(conn, :current_user, current_user)
   end
 
+  @doc """
+  Helper method to log in a user. This will store a user into the assign, as
+  well as session under :current_user.
+  Will redirect to "/"
+  """
   def log_in_user(conn, current_user) do
     user_return_to = get_session(conn, :user_return_to)
 
@@ -57,17 +73,7 @@ defmodule HubIdentityElixir.Authentication do
   # session to avoid fixation attacks. If there is any data
   # in the session you may want to preserve after log in/log out,
   # you must explicitly fetch the session data before clearing
-  # and then immediately set it after clearing, for example:
-  #
-  #     defp renew_session(conn) do
-  #       preferred_locale = get_session(conn, :preferred_locale)
-  #
-  #       conn
-  #       |> configure_session(renew: true)
-  #       |> clear_session()
-  #       |> put_session(:preferred_locale, preferred_locale)
-  #     end
-  #
+  # and then immediately set it after clearing.
   defp renew_session(conn) do
     conn
     |> configure_session(renew: true)

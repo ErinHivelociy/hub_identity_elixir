@@ -1,6 +1,11 @@
 defmodule HubIdentityElixir.HubIdentity do
   @moduledoc """
-  Documentation for `HubIdentityElixir`.
+  An Elixir Package designed to make implementing HubIdentity authentication easy and fast.
+  In order to use this package you need to have an account with [HubIdentity](https://stage-identity.hubsynch.com/)
+
+  Currently this is only for [Hivelocity](https://www.hivelocity.co.jp/) uses. If you have a
+  commercial interest please contact the Package Manager Erin Boeger through linkedIn or Github or
+  through [Hivelocity](https://www.hivelocity.co.jp/contact/).
   """
 
   alias HubIdentityElixir.HubIdentity.{Server, Token}

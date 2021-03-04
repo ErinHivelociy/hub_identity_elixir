@@ -4,7 +4,7 @@ defmodule HubIdentityElixir.MixProject do
   def project do
     [
       app: :hub_identity_elixir,
-      version: "0.1.2",
+      version: "0.1.21",
       elixir: "~> 1.11",
       elixirc_paths: elixirc_paths(Mix.env()),
       build_embedded: Mix.env() == :prod,
@@ -13,7 +13,13 @@ defmodule HubIdentityElixir.MixProject do
       description: description(),
       package: package(),
       name: "HubIdentityElixir",
-      source_url: "https://github.com/ErinHivelociy/hub_identity_elixir"
+      source_url: "https://github.com/ErinHivelociy/hub_identity_elixir",
+      # Docs
+      name: "HubIdentity Elixir",
+      source_url: "https://github.com/ErinHivelociy/hub_identity_elixir",
+      homepage_url: "https://stage-identity.hubsynch.com/",
+      # The main page in the docs
+      docs: [main: "HubIdentity", extras: ["README.md"]]
     ]
   end
 

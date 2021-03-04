@@ -1,4 +1,6 @@
 defmodule HubIdentityElixir.HubIdentity.Server do
+  @moduledoc false
+
   @http Application.get_env(:hub_identity_elixir, :http) || HTTPoison
 
   def authenticate(params) do

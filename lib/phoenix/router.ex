@@ -1,5 +1,5 @@
 defmodule HubIdentityElixir.Phoenix.Router do
-  @doc false
+  @moduledoc false
   use Phoenix.Router
 
   defmacro __using__(_opts \\ []) do
@@ -15,15 +15,6 @@ defmodule HubIdentityElixir.Phoenix.Router do
     end
   end
 
-  @doc """
-  HubIdentityElixir routes macro.
-  Use this macro to define the HubIdentityElixir routes. This will call
-  `hub_identity_routes/0`.
-  ## Example
-      scope "/" do
-        hub_identity_routes()
-      end
-  """
   defmacro hub_identity_routes do
     quote do
       scope "/", alias: false, as: false do

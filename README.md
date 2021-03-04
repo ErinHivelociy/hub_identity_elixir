@@ -23,7 +23,7 @@ end
 Setup your configuration in `config.exs, dev.exs, prod.exs` etc:
 
 ```elixir
-config :hub_identity_elixir, :url, #Either staging, production, or localhost
+config :hub_identity_elixir, :url, # Either staging, production, or localhost
 config :hub_identity_elixir, :public_key, # The public key from HubIdentity
 config :hub_identity_elixir, :otp_app, # The name of your OTP application
 ```
@@ -36,14 +36,14 @@ in `router.exs`:
 ```elixir
 defmodule MyAppWeb.Router do
   use MyAppWeb, :router
-  use HubIdentityElixir.Phoenix.Router #<- This line
+  use HubIdentityElixir.Phoenix.Router # <- Add HubIdentity Router
 
   # router stuff..
 
   scope "/", MyAppWeb do
     pipe_through :browser
 
-    hub_identity_routes()
+    hub_identity_routes()  # <- Add HubIdentity routes
     get "/", PageController, :index
   end
 ```
