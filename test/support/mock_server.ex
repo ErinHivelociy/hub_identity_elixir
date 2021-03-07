@@ -7,11 +7,25 @@ defmodule HubIdentityElixir.MockServer do
     {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(providers())}}
   end
 
+  def get("localhost/api/v1/current_user/test_cookie_id", _headers) do
+    {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(current_user())}}
+  end
+
   def post("localhost/api/v1/providers/hub_identity", body, _headers) do
     case Jason.decode!(body) do
       %{"email" => "erin@hivelocity.co.jp"} -> token_response()
       _ -> fail_response()
     end
+  end
+
+  def current_user do
+    %{
+      "Object" => "CurrentUser",
+      "owner_type" => nil,
+      "owner_uid" => nil,
+      "uid" => "380549d1-cf9a-4bcb-b671-a2667e8d2301",
+      "user_type" => "Identities.User"
+    }
   end
 
   # This is a valid set of tokens to test with. The signature will validate with the certs below

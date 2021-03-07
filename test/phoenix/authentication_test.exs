@@ -64,6 +64,7 @@ defmodule HubIdentityElixir.Phoenix.AuthenticationTest do
 
       conn =
         build_conn()
+        |> put_req_cookie("_hub_identity_access", "test_cookie_id")
         |> init_test_session(%{current_user: current_user})
         |> Authentication.fetch_current_user(%{})
 
@@ -83,6 +84,15 @@ defmodule HubIdentityElixir.Phoenix.AuthenticationTest do
     test "redirects to root path", %{conn: conn} do
       logged_out = Authentication.log_out_user(conn)
       assert redirected_to(logged_out) =~ "/"
+    end
+
+    test "destroys the cookie (when in config)", %{conn: conn} do
+      logged_out = Authentication.log_out_user(conn)
+
+      assert logged_out.resp_cookies["_hub_identity_access"] == %{
+               max_age: 0,
+               universal_time: {{1970, 1, 1}, {0, 0, 0}}
+             }
     end
   end
 

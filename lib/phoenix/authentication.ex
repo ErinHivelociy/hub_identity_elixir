@@ -40,9 +40,23 @@ defmodule HubIdentityElixir.Authentication do
   It clears all session data for safety. See renew_session.
   """
   def log_out_user(conn) do
+    case Application.get_env(:hub_identity_elixir, :destroy_cookie) do
+      true -> destroy_cookie_logout(conn)
+      _ -> logout(conn)
+    end
+  end
+
+  defp destroy_cookie_logout(conn) do
+    conn
+    |> delete_resp_cookie("_hub_identity_access")
+    |> logout()
+  end
+
+  defp logout(conn) do
     conn
     |> renew_session()
     |> redirect(to: "/")
+    |> halt()
   end
 
   @doc """

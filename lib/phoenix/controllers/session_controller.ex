@@ -13,13 +13,17 @@ defmodule HubIdentityElixir.Phoenix.SessionController do
     )
   end
 
-  def create(conn, params) do
-    with {:ok, current_user} <- HubIdentity.build_current_user(params) do
+  def create(%Plug.Conn{req_cookies: %{"_hub_identity_access" => cookie_id}} = conn, _params) do
+    with current_user when is_map(current_user) <- HubIdentity.get_current_user(cookie_id) do
       Authentication.log_in_user(conn, current_user)
     end
   end
 
-  def delete(conn, _params) do
+  def create(conn, _params) do
+    Authentication.log_out_user(conn)
+  end
+
+  def destroy(conn, _params) do
     conn
     |> put_flash(:info, "Logged out successfully.")
     |> Authentication.log_out_user()
