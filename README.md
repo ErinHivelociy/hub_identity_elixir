@@ -53,23 +53,6 @@ This will add the following routes to your application:
 
 If you want a `@current_user` helper then add `plug :fetch_current_user` to your pipeline.
 
-## Logging a user out
-It is recommended to allow two logout options.
-- Logout from your Application
-- Logout from HubIdentity
-
-Both use the same logout path `sessions_destroy`
-
-### Logout from your Application
-This will clear the users session and still allow a user to login using a HubIdentity
-cookie (if the cookie persists). This will allow a user who is authenticated at HubIdentity
-to continue to use applications which use HubIdentity until the cookie expires.
-
-### Logout from HubIdentity
-This will clear the users session and destroy the HubIdentity cookie.
-This will allow users who use other applications which use HubIdentity until they logout from them.
-Then they will have to authenticate again with HubIdentity.
-
 ## Restricted routes
 
 For authentication required (restricted) routes add the plug `require_authenticated_user`

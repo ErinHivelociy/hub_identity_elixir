@@ -4,7 +4,7 @@ defmodule HubIdentityElixir.MixProject do
   def project do
     [
       app: :hub_identity_elixir,
-      version: "0.1.3",
+      version: "0.1.31",
       elixir: "~> 1.11",
       elixirc_paths: elixirc_paths(Mix.env()),
       build_embedded: Mix.env() == :prod,

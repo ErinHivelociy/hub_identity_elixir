@@ -12,8 +12,7 @@ defmodule HubIdentityElixir.Phoenix.Controllers.SessionControllerTest do
     test "with valid hub_identity cookie assigns current_user", %{conn: conn} do
       response =
         conn
-        |> put_req_cookie("_hub_identity_access", "test_cookie_id")
-        |> get(Routes.session_path(conn, :create))
+        |> get(Routes.session_path(conn, :create, %{user_token: "test_cookie_id"}))
 
       assert redirected_to(response) == "/"
       current_user = get_session(response, :current_user)
@@ -34,28 +33,6 @@ defmodule HubIdentityElixir.Phoenix.Controllers.SessionControllerTest do
 
       assert redirected_to(response) == "/"
       assert get_session(response, :current_user) == nil
-
-      refute response.resp_cookies["_hub_identity_access"] == %{
-               max_age: 0,
-               universal_time: {{1970, 1, 1}, {0, 0, 0}}
-             }
-    end
-
-    test "with hub_identity destroy true, logs a user out and returns to root path when set in config",
-         %{conn: conn} do
-      response =
-        conn
-        |> init_test_session(%{current_user: HubIdentityElixir.MockServer.current_user()})
-        |> put_req_cookie("_hub_identity_access", "test_cookie_id")
-        |> delete(Routes.session_path(conn, :destroy, hub_identity: true))
-
-      assert redirected_to(response) == "/"
-      assert get_session(response, :current_user) == nil
-
-      assert response.resp_cookies["_hub_identity_access"] == %{
-               max_age: 0,
-               universal_time: {{1970, 1, 1}, {0, 0, 0}}
-             }
     end
   end
 end
