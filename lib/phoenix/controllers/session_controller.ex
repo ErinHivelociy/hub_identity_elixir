@@ -23,7 +23,6 @@ defmodule HubIdentityElixir.Phoenix.SessionController do
 
   def destroy(conn, _params) do
     conn
-    |> put_flash(:info, "Logged out successfully.")
     |> Authentication.logout_user()
   end
 

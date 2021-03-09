@@ -28,8 +28,9 @@ defmodule HubIdentityElixir.Authentication do
 
     conn
     |> renew_session()
-    |> clear_flash()
     |> put_session(:current_user, current_user)
+    |> fetch_flash()
+    |> put_flash(:info, "Successfully logged in with HubIdentity")
     |> assign(:current_user, current_user)
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
@@ -42,6 +43,8 @@ defmodule HubIdentityElixir.Authentication do
   def logout_user(conn) do
     conn
     |> renew_session()
+    |> fetch_flash()
+    |> put_flash(:info, "Logged out successfully.")
     |> redirect(to: "/")
     |> halt()
   end
