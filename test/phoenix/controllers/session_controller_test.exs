@@ -9,29 +9,53 @@ defmodule HubIdentityElixir.Phoenix.Controllers.SessionControllerTest do
   end
 
   describe "create/2" do
-    test "with valid access_token assigns current_user", %{conn: conn} do
-      new_conn =
-        get(conn, Routes.session_path(conn, :create), HubIdentityElixir.MockServer.tokens())
+    test "with valid hub_identity cookie assigns current_user", %{conn: conn} do
+      response =
+        conn
+        |> put_req_cookie("_hub_identity_access", "test_cookie_id")
+        |> get(Routes.session_path(conn, :create))
 
-      assert redirected_to(new_conn) == "/"
-      current_user = get_session(new_conn, :current_user)
+      assert redirected_to(response) == "/"
+      current_user = get_session(response, :current_user)
 
-      assert current_user.uid == "380549d1-cf9a-4bcb-b671-a2667e8d2301"
-      assert current_user.user_type == "Identities.User"
+      assert current_user["uid"] == "380549d1-cf9a-4bcb-b671-a2667e8d2301"
+      assert current_user["user_type"] == "Identities.User"
     end
   end
 
   describe "delete/2" do
-    test "logs a user out and returns to root path", %{conn: conn} do
-      new_conn =
-        get(conn, Routes.session_path(conn, :create), HubIdentityElixir.MockServer.tokens())
+    test "without hub_identity destroy true, logs a user out and returns to root path when set in config",
+         %{conn: conn} do
+      response =
+        conn
+        |> init_test_session(%{current_user: HubIdentityElixir.MockServer.current_user()})
+        |> put_req_cookie("_hub_identity_access", "test_cookie_id")
+        |> delete(Routes.session_path(conn, :destroy))
 
-      assert get_session(new_conn, :current_user) != nil
+      assert redirected_to(response) == "/"
+      assert get_session(response, :current_user) == nil
 
-      logged_out = delete(conn, Routes.session_path(conn, :delete))
+      refute response.resp_cookies["_hub_identity_access"] == %{
+               max_age: 0,
+               universal_time: {{1970, 1, 1}, {0, 0, 0}}
+             }
+    end
 
-      assert redirected_to(logged_out) == "/"
-      assert get_session(logged_out, :current_user) == nil
+    test "with hub_identity destroy true, logs a user out and returns to root path when set in config",
+         %{conn: conn} do
+      response =
+        conn
+        |> init_test_session(%{current_user: HubIdentityElixir.MockServer.current_user()})
+        |> put_req_cookie("_hub_identity_access", "test_cookie_id")
+        |> delete(Routes.session_path(conn, :destroy, hub_identity: true))
+
+      assert redirected_to(response) == "/"
+      assert get_session(response, :current_user) == nil
+
+      assert response.resp_cookies["_hub_identity_access"] == %{
+               max_age: 0,
+               universal_time: {{1970, 1, 1}, {0, 0, 0}}
+             }
     end
   end
 end

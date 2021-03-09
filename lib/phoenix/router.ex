@@ -18,7 +18,7 @@ defmodule HubIdentityElixir.Phoenix.Router do
   defmacro hub_identity_routes do
     quote do
       scope "/", alias: false, as: false do
-        delete("/sessions/logout", HubIdentityElixir.Phoenix.SessionController, :delete)
+        delete("/sessions/destroy", HubIdentityElixir.Phoenix.SessionController, :destroy)
         get("/sessions/new", HubIdentityElixir.Phoenix.SessionController, :new)
         get("/sessions/create", HubIdentityElixir.Phoenix.SessionController, :create)
       end

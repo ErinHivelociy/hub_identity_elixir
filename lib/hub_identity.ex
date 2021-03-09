@@ -79,6 +79,8 @@ defmodule HubIdentityElixir.HubIdentity do
     |> Enum.find(fn %{"kid" => kid} -> kid == key_id end)
   end
 
+  def get_current_user(cookie_id), do: Server.get_current_user(cookie_id)
+
   @doc """
   Parse and validate a JWT from HubIdentity.
   When successful will return an ok tuple with a current_user map.

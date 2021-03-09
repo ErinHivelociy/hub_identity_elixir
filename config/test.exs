@@ -16,5 +16,6 @@ config :phoenix, :json_library, Jason
 
 config :hub_identity_elixir, :http, HubIdentityElixir.MockServer
 config :hub_identity_elixir, :url, "localhost"
+config :hub_identity_elixir, :destroy_cookie, true
 # Print only warnings and errors during test
 config :logger, level: :warn
