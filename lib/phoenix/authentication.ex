@@ -23,7 +23,7 @@ defmodule HubIdentityElixir.Authentication do
   well as session under :current_user.
   Will redirect to "/"
   """
-  def log_in_user(conn, current_user) do
+  def login_user(conn, current_user) do
     user_return_to = get_session(conn, :user_return_to)
 
     conn
@@ -39,20 +39,7 @@ defmodule HubIdentityElixir.Authentication do
 
   It clears all session data for safety. See renew_session.
   """
-  def log_out_user(conn) do
-    case Application.get_env(:hub_identity_elixir, :destroy_cookie) do
-      true -> destroy_cookie_logout(conn)
-      _ -> logout(conn)
-    end
-  end
-
-  defp destroy_cookie_logout(conn) do
-    conn
-    |> delete_resp_cookie("_hub_identity_access")
-    |> logout()
-  end
-
-  defp logout(conn) do
+  def logout_user(conn) do
     conn
     |> renew_session()
     |> redirect(to: "/")
