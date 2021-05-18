@@ -37,7 +37,7 @@ defmodule HubIdentityElixir.HubIdentity.Server do
   end
 
   def get_providers do
-    get("/providers", %{type: :public})
+    get("/providers", [], %{type: :public})
   end
 
   def post(url, body, opts \\ %{}) do
@@ -61,6 +61,9 @@ defmodule HubIdentityElixir.HubIdentity.Server do
   defp get_headers(_), do: private_headers()
 
   defp parse_response({:ok, %HTTPoison.Response{status_code: 400, body: message}}),
+    do: {:error, message}
+
+  defp parse_response({:ok, %HTTPoison.Response{status_code: 401, body: message}}),
     do: {:error, message}
 
   defp parse_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}) do
