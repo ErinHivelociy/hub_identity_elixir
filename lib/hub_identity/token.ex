@@ -23,14 +23,9 @@ defmodule HubIdentityElixir.HubIdentity.Token do
   end
 
   defp build_user_params(claims) do
-    with {:ok,
-          %{
-            "owner_type" => owner_type,
-            "owner_uid" => owner_uid,
-            "sub" => subject
-          }} <- base_jason_decode(claims),
+    with {:ok, %{"sub" => subject}} <- base_jason_decode(claims),
          [user_type, uid] <- String.split(subject, ":") do
-      {:ok, %{owner_type: owner_type, owner_uid: owner_uid, uid: uid, user_type: user_type}}
+      {:ok, %{uid: uid, user_type: user_type}}
     else
       {:error, message} -> {:error, message}
       _ -> {:error, :claims_parse_fail}

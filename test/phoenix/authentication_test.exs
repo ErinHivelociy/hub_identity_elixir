@@ -6,8 +6,6 @@ defmodule HubIdentityElixir.Phoenix.AuthenticationTest do
   describe "fetch_current_user/2" do
     setup do
       current_user = %{
-        owner_uid: "owner_uid",
-        owner_type: "Hubsynch",
         uid: "uid_1234",
         user_type: "HubIdentity.User"
       }
@@ -25,8 +23,6 @@ defmodule HubIdentityElixir.Phoenix.AuthenticationTest do
   describe "login_user/2" do
     setup do
       current_user = %{
-        owner_uid: "owner_uid",
-        owner_type: "Hubsynch",
         uid: "uid_1234",
         user_type: "HubIdentity.User"
       }
@@ -56,8 +52,6 @@ defmodule HubIdentityElixir.Phoenix.AuthenticationTest do
   describe "logout_user/1" do
     setup do
       current_user = %{
-        owner_uid: "owner_uid",
-        owner_type: "Hubsynch",
         uid: "uid_1234",
         user_type: "HubIdentity.User"
       }
@@ -90,8 +84,6 @@ defmodule HubIdentityElixir.Phoenix.AuthenticationTest do
   describe "require_authenticated_user/2" do
     setup do
       current_user = %{
-        owner_uid: "owner_uid",
-        owner_type: "Hubsynch",
         uid: "uid_1234",
         user_type: "HubIdentity.User"
       }

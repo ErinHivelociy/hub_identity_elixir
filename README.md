@@ -26,6 +26,12 @@ Setup your configuration in `config.exs, dev.exs, prod.exs` etc:
 config :hub_identity_elixir, :url, # Either staging, production, or localhost
 config :hub_identity_elixir, :public_key, # The public key from HubIdentity
 ```
+Optional config settings
+```elixir
+config :hub_identity_elixir, :authenticated_redirect, # This will allow a redirect after authentication, default is: "/"
+config :hub_identity_elixir, :login_path, # This will allow a redirect after authentication, default is: "/sessions/new"
+config :hub_identity_elixir, :logged_out_redirect, # This will allow a redirect after authentication, default is: "/"
+```
 
 Inside your Router add `use HubIdentityElixir.Phoenix.Router` and include
 the `hub_identity_routes()`

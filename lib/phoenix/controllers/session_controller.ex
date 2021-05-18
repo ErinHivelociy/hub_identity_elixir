@@ -12,7 +12,7 @@ defmodule HubIdentityElixir.Phoenix.SessionController do
   end
 
   def create(conn, %{"user_token" => user_token}) do
-    with current_user when is_map(current_user) <- HubIdentity.get_current_user(user_token) do
+    with {:ok, current_user} <- HubIdentity.get_current_user(user_token) do
       Authentication.login_user(conn, current_user)
     end
   end

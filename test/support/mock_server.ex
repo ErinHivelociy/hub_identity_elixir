@@ -1,13 +1,13 @@
 defmodule HubIdentityElixir.MockServer do
-  def get("localhost/api/v1/oauth/certs", _headers) do
+  def request(:get, "localhost/api/v1/oauth/certs", "", _headers, _params) do
     {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(certs())}}
   end
 
-  def get("localhost/api/v1/providers", _headers) do
+  def request(:get, "localhost/api/v1/providers", "", _headers, _params) do
     {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(providers())}}
   end
 
-  def get("localhost/api/v1/current_user/test_cookie_id", _headers) do
+  def request(:get, "localhost/api/v1/current_user/test_cookie_id", "", _headers, _params) do
     {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(current_user())}}
   end
 
@@ -18,11 +18,12 @@ defmodule HubIdentityElixir.MockServer do
     end
   end
 
+  def delete(_url, _headers),
+    do: {:ok, %HTTPoison.Response{status_code: 202, body: "successful operation"}}
+
   def current_user do
     %{
       "Object" => "CurrentUser",
-      "owner_type" => nil,
-      "owner_uid" => nil,
       "uid" => "380549d1-cf9a-4bcb-b671-a2667e8d2301",
       "user_type" => "Identities.User"
     }

@@ -27,7 +27,7 @@ defmodule HubIdentityElixir.HubIdentity.TokenTest do
 
     test "returns error if claims parse fails" do
       token =
-        "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodWJfaWRlbnRpdHkiLCJleHAiOjE2MDk4MjY0NjMsImlhdCI6MTYwOTc0MDA2MywiaXNzIjoiaHViX2lkZW50aXR5IiwianRpIjoiNjRhNjM1MDItYTE1Ni00MDhlLTk2MmYtOWZiODgxMmVmNzliIiwibmJmIjoxNjA5NzQwMDYyLCJzdWIiOiJVc2Vycy5Vc2VyOjJjODUyYjNhLTM3MDktNGY4MS04NjA3LWU3NGFhZTQyNmM1NCIsInR5cCI6ImFjY2VzcyJ9.YkG-4ZXEzCZCGmRL0VPI-Bu1DY8_6shXfeNEnSAx0M77gpZHUZyO4E30JtLoiN_PdRdzBDf6JSaQRZr3xtaEmQ"
+        "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodWJfaWRlbnRpdHkiLCJleHAiOjE2MDk4MjY0NjMsImlhdCI6MTYwOTc0MDA2MywiaXNzIjoiaHViX2lkZW50aXR5IiwianRpIjoiNjRhNjM1MDItYTE1Ni00MDhlLTk2MmYtOWZiODgxMmVmNzliIiwibmJmIjoxNjA5NzQwMDYyLCJ0eXAiOiJhY2Nlc3MifQ.YkG-4ZXEzCZCGmRL0VPI-Bu1DY8_6shXfeNEnSAx0M77gpZHUZyO4E30JtLoiN_PdRdzBDf6JSaQRZr3xtaEmQ"
 
       assert {:error, :claims_parse_fail} == Token.parse(token)
     end

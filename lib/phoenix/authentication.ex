@@ -32,7 +32,7 @@ defmodule HubIdentityElixir.Authentication do
     |> fetch_flash()
     |> put_flash(:info, "Successfully logged in with HubIdentity")
     |> assign(:current_user, current_user)
-    |> redirect(to: user_return_to || signed_in_path(conn))
+    |> redirect(to: user_return_to || authenticated_redirect())
   end
 
   @doc """
@@ -45,7 +45,7 @@ defmodule HubIdentityElixir.Authentication do
     |> renew_session()
     |> fetch_flash()
     |> put_flash(:info, "Logged out successfully.")
-    |> redirect(to: "/")
+    |> redirect(to: logged_out_redirect())
     |> halt()
   end
 
@@ -62,7 +62,7 @@ defmodule HubIdentityElixir.Authentication do
       conn
       |> put_flash(:error, "You must log in to access this page.")
       |> maybe_store_return_to()
-      |> redirect(to: "/sessions/new")
+      |> redirect(to: login_path())
       |> halt()
     end
   end
@@ -85,5 +85,11 @@ defmodule HubIdentityElixir.Authentication do
     |> assign(:current_user, nil)
   end
 
-  defp signed_in_path(_conn), do: "/"
+  defp authenticated_redirect,
+    do: Application.get_env(:hub_identity_elixir, :authenticated_redirect) || "/"
+
+  defp login_path, do: Application.get_env(:hub_identity_elixir, :login_path) || "/sessions/new"
+
+  defp logged_out_redirect,
+    do: Application.get_env(:hub_identity_elixir, :logged_out_redirect) || "/"
 end

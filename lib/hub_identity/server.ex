@@ -3,29 +3,10 @@ defmodule HubIdentityElixir.HubIdentity.Server do
 
   @http Application.get_env(:hub_identity_elixir, :http) || HTTPoison
   @default_url "https://stage-identity.hubsynch.com"
+  @default_api "/api/v1"
 
   def authenticate(params) do
-    @http.post(
-      "#{base_url()}/api/v1/providers/hub_identity",
-      Jason.encode!(params),
-      public_headers()
-    )
-    |> parse_response()
-  end
-
-  def get_certs do
-    @http.get("#{base_url()}/api/v1/oauth/certs", [])
-    |> parse_response!()
-  end
-
-  def get_current_user(cookie_id) do
-    @http.get("#{base_url()}/api/v1/current_user/#{cookie_id}", private_headers())
-    |> parse_response!()
-  end
-
-  def get_providers do
-    @http.get("#{base_url()}/api/v1/providers", public_headers())
-    |> parse_response()
+    post("/providers/hub_identity", params, %{type: :public})
   end
 
   def base_url do
@@ -33,6 +14,58 @@ defmodule HubIdentityElixir.HubIdentity.Server do
       url when is_binary(url) -> url
       _ -> @default_url
     end
+  end
+
+  def delete(url) do
+    @http.delete("#{base_api_url()}#{url}", private_headers())
+    |> parse_response()
+  end
+
+  def get(url, params \\ [], opts \\ %{}) do
+    @http.request(:get, "#{base_api_url()}#{url}", "", get_headers(opts[:type]), params: params)
+    |> parse_response()
+  end
+
+  def get_certs do
+    with {:ok, certs} <- get("/oauth/certs", %{type: :public}) do
+      certs
+    end
+  end
+
+  def get_current_user(user_token) do
+    get("/current_user/#{user_token}")
+  end
+
+  def get_providers do
+    get("/providers", %{type: :public})
+  end
+
+  def post(url, body, opts \\ %{}) do
+    @http.post("#{base_api_url()}#{url}", Jason.encode!(body), get_headers(opts[:type]))
+    |> parse_response()
+  end
+
+  defp api_version do
+    case Application.get_env(:hub_identity_elixir, :api_version) do
+      url when is_binary(url) -> url
+      _ -> @default_api
+    end
+  end
+
+  def base_api_url do
+    "#{base_url()}#{api_version()}"
+  end
+
+  defp get_headers(:public), do: public_headers()
+
+  defp get_headers(_), do: private_headers()
+
+  defp parse_response({:ok, %HTTPoison.Response{status_code: 400, body: message}}),
+    do: {:error, message}
+
+  defp parse_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}) do
+    body
+    |> Jason.decode()
   end
 
   defp public_headers do
@@ -47,18 +80,5 @@ defmodule HubIdentityElixir.HubIdentity.Server do
       {"x-api-key", Application.get_env(:hub_identity_elixir, :private_key)},
       {"Content-Type", "application/json"}
     ]
-  end
-
-  defp parse_response({:ok, %HTTPoison.Response{status_code: 400, body: message}}),
-    do: {:error, message}
-
-  defp parse_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}) do
-    body
-    |> Jason.decode()
-  end
-
-  defp parse_response!({:ok, %HTTPoison.Response{status_code: 200, body: body}}) do
-    body
-    |> Jason.decode!()
   end
 end
