@@ -18,6 +18,13 @@ defmodule HubIdentityElixir.MockServer do
     end
   end
 
+  def put("localhost/api/v1/providers/hub_identity", body, _headers) do
+    case Jason.decode!(body) do
+      %{"email" => "erin@hivelocity.co.jp"} -> token_response()
+      _ -> fail_response()
+    end
+  end
+
   def delete(_url, _headers),
     do: {:ok, %HTTPoison.Response{status_code: 202, body: "successful operation"}}
 

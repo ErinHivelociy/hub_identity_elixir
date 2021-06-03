@@ -45,6 +45,11 @@ defmodule HubIdentityElixir.HubIdentity.Server do
     |> parse_response()
   end
 
+  def put(url, body, opts \\ %{}) do
+    @http.put("#{base_api_url()}#{url}", Jason.encode!(body), get_headers(opts[:type]))
+    |> parse_response()
+  end
+
   defp api_version do
     case Application.get_env(:hub_identity_elixir, :api_version) do
       url when is_binary(url) -> url

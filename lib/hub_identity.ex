@@ -8,7 +8,7 @@ defmodule HubIdentityElixir.HubIdentity do
   through [Hivelocity](https://www.hivelocity.co.jp/contact/).
   """
 
-  alias HubIdentityElixir.HubIdentity.{Server, Token}
+  alias HubIdentityElixir.HubIdentity.{Email, Server, Token, Verification}
 
   @doc """
   Authenticate with HubIdentity using an email and password. This will call the HubIdentity
@@ -18,10 +18,10 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.authenticate(%{email: "erin@hivelocity.co.jp", password: "password"})
+      iex> HubIdentityElixir.HubIdentity.authenticate(%{email: "erin@hivelocity.co.jp", password: "password"})
       {:ok, %{"access_token" => access_token, "refresh_token" => refresh_token}}
 
-      iex> HubIdentityElixir.authenticate(%{email: "erin@hivelocity.co.jp", password: "wrong"})
+      iex> HubIdentityElixir.HubIdentity.authenticate(%{email: "erin@hivelocity.co.jp", password: "wrong"})
       {:error, "bad request"}
 
   """
@@ -36,7 +36,7 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.get_certs()
+      iex> HubIdentityElixir.HubIdentity.get_certs()
       [
           {
               "alg": "RS256",
@@ -59,7 +59,7 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.get_certs("C8Rn3J8tPlMp8etztCsb4k51sjTFXbA-Til9XptF2FM")
+      iex> HubIdentityElixir.HubIdentity.get_certs("C8Rn3J8tPlMp8etztCsb4k51sjTFXbA-Til9XptF2FM")
         {
             "alg": "RS256",
             "e": "AQAB",
@@ -87,16 +87,14 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.parse_token(%{"access_token" => access JWT})
+      iex> HubIdentityElixir.HubIdentity.parse_token(%{"access_token" => access JWT})
       {:ok, %{
-          owner_type: "Hubsynch.User",
-          owner_uid: "uid_1234",
           uid: "hub_identity_uid_1234",
           user_type: "HubIdentity.User"
         }
       }
 
-      iex> HubIdentityElixir.parse_token(%{"access_token" => invalid JWT})
+      iex> HubIdentityElixir.HubIdentity.parse_token(%{"access_token" => invalid JWT})
       {:error, :claims_parse_fail}
 
   """
@@ -112,7 +110,7 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.get_providers()
+      iex> HubIdentityElixir.HubIdentity.get_providers()
       [
           {
               "logo_url": "https://stage-identity.hubsynch.com/images/facebook.png",
@@ -136,5 +134,84 @@ defmodule HubIdentityElixir.HubIdentity do
     with {:ok, current_user} <- Token.parse(access_token) do
       {:ok, current_user}
     end
+  end
+
+  @doc """
+  Get the list of a users emails from HubIdentity.
+
+  ## Examples
+
+      iex> HubIdentityElixir.HubIdentity.get_user_emails(user_uid)
+      {:ok,
+      [
+        %{
+          "Object" => "Email",
+          "address" => "test@hivelocity.co.jp",
+          "confirmed_at" => "2021-04-07T02:52:31Z",
+          "primary" => true,
+          "uid" => "81b7d2ef-43ef-42f8-922d-62602eac518a"
+        },
+        %{
+          "Object" => "Email",
+          "address" => "test2@hivelocity.co.jp",
+          "confirmed_at" => "2021-06-03T07:59:55Z",
+          "primary" => false,
+          "uid" => "8c8c09a7-b500-430c-a45c-569bd9fa5a08"
+        }
+      ]}
+  """
+  def get_user_emails(user_uid) do
+    Email.get(user_uid)
+  end
+@doc """
+  Sends an email confirmation to the email address to add a new users email.
+
+  ## Examples
+
+      iex> HubIdentityElixir.HubIdentity.add_user_email(user_uid, address)
+        body: "{\"success\":\"email verification request sent\"}"
+  """
+  def add_user_email(user_uid, address) do
+    Email.create(user_uid, address)
+  end
+
+  @doc """
+  Sends an email verification code to the email address.
+
+  Reference length must be between 22 and 44 characters
+  ## Examples
+
+      iex> HubIdentityElixir.HubIdentity.send_verification(user_uid, reference)
+        body: "successful operation"
+  """
+  def send_verification(user_uid, reference) do
+    Verification.create(user_uid, reference)
+  end
+@doc """
+  Verify the code and reference to validate the user.
+  You have 3 attemps.
+  ## Examples
+      iex> HubIdentityElixir.HubIdentity.validate_verification_code(user_uid, reference, valid_code)
+        {:ok, %{"ok" => "verification success"}}
+
+      iex> HubIdentityElixir.HubIdentity.validate_verification_code(user_uid, reference, wrong_code)
+        {:error, "{\"error\":\"verification failed\"}"}
+
+      iex> HubIdentityElixir.HubIdentity.validate_verification_code(user_uid, reference, 3rd_attemp_code)
+        {:error, "{\"error\":\"max attempts reached\"}"}
+  """
+  def validate_verification_code(user_uid, reference, code) do
+    Verification.validate(user_uid, reference, code)
+  end
+@doc """
+  Renew the reference and sends a new verification code to the user.
+
+  ## Examples
+
+      iex> HubIdentityElixir.HubIdentity.renew_verification_code(user_uid, old_reference, new_reference)
+        body: "successful operation"
+  """
+  def renew_verification_code(user_uid, old_reference, new_reference) do
+    Verification.renew(user_uid, old_reference, new_reference)
   end
 end
