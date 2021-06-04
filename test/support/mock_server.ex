@@ -11,6 +11,10 @@ defmodule HubIdentityElixir.MockServer do
     {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(current_user())}}
   end
 
+  def request(:get, "localhost/api/v1/users/user_uid/emails", "", _headers, _params) do
+    {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(emails())}}
+  end
+
   def post("localhost/api/v1/providers/hub_identity", body, _headers) do
     case Jason.decode!(body) do
       %{"email" => "erin@hivelocity.co.jp"} -> token_response()
@@ -18,6 +22,40 @@ defmodule HubIdentityElixir.MockServer do
     end
   end
 
+  def post("localhost/api/v1/users/hub_identity/emails", body, _headers) do
+    case Jason.decode!(body) do
+      %{"email" => %{"address" => address}} -> email_response(address)
+      _ -> fail_response()
+    end
+  end
+
+  def post("localhost/api/v1/users/hub_identity/verification", body, _headers) do
+    case Jason.decode!(body) do
+      %{"reference" => "reference"} -> verification_response()
+      _ -> fail_response()
+    end
+  end
+
+  def post("localhost/api/v1/users/hub_identity/verification/renew", body, _headers) do
+    case Jason.decode!(body) do
+      %{"old_reference" => "old_reference", "new_reference" => "new_reference"} -> verification_response()
+      _ -> fail_response()
+    end
+  end
+
+  def put("localhost/api/v1/providers/hub_identity", body, _headers) do
+    case Jason.decode!(body) do
+      %{"email" => "erin@hivelocity.co.jp"} -> token_response()
+      _ -> fail_response()
+    end
+  end
+
+  def put("localhost/api/v1/users/hub_identity/verification/validate", body, _headers) do
+    case Jason.decode!(body) do
+      %{"reference" => "reference", "code" => code} when is_integer(code) -> validation_response(code)
+      _ -> fail_response()
+    end
+  end
   def delete(_url, _headers),
     do: {:ok, %HTTPoison.Response{status_code: 202, body: "successful operation"}}
 
@@ -27,6 +65,26 @@ defmodule HubIdentityElixir.MockServer do
       "uid" => "380549d1-cf9a-4bcb-b671-a2667e8d2301",
       "user_type" => "Identities.User"
     }
+  end
+
+  def emails do
+    [
+      %{
+        "Object" => "Email",
+        "address" => "test@hivelocity.co.jp",
+        "confirmed_at" => "2021-04-07T02:52:31Z",
+        "primary" => true,
+        "uid" => "81b7d2ef-43ef-42f8-922d-62602eac518a"
+      },
+      %{
+        "Object" => "Email",
+        "address" => "test2@hivelocity.co.jp",
+        "confirmed_at" => "2021-06-03T07:59:55Z",
+        "primary" => false,
+        "uid" => "8c8c09a7-b500-430c-a45c-569bd9fa5a08"
+      }
+    ]
+
   end
 
   # This is a valid set of tokens to test with. The signature will validate with the certs below
@@ -43,6 +101,16 @@ defmodule HubIdentityElixir.MockServer do
         "eyJraWQiOiJvNFhRbVNLTHlLN1I0ejhDUWRLaVNDQVQ4ZmhnWFlNVWRLUUlUU0Rra2xJIiwiYWxnIjoiUlMyNTYiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJodHRwczovL3N0YWdlLWlkZW50aXR5Lmh1YnN5bmNoLmNvbSIsImVtYWlsIjoiZXJpbkBoaXZlbG9jaXR5LmNvLmpwIiwiZXhwIjoxNjE0NjU1NDM1LCJpYXQiOjE2MTQ2NTE4MzUsImlzcyI6Ikh1YklkZW50aXR5IiwianRpIjoiOTQ1ZmI4OTQtMmNhNi00ZDg2LWExNjMtOGRlN2E5M2QxNjNhIiwibmJmIjoxNjE0NjUxODM0LCJvd25lcl90eXBlIjpudWxsLCJvd25lcl91aWQiOm51bGwsInN1YiI6IklkZW50aXRpZXMuVXNlcjozODA1NDlkMS1jZjlhLTRiY2ItYjY3MS1hMjY2N2U4ZDIzMDEiLCJ0eXAiOiJhY2Nlc3MiLCJ1aWQiOiIzODA1NDlkMS1jZjlhLTRiY2ItYjY3MS1hMjY2N2U4ZDIzMDEifQ.nesXK09oqUIYZWNdphzcA4IbXGaOlMUd_dH_NjprRspBrlNhq4P78ou62bVcBu5vmL3kSqEwXsGDnjJTSApPRn8XvojmC72QG8_Ld2uv3n13alQmTFckq50sLRzqrzJad_oYTpZsjVi2yoHK35H_2BLwKQk5GpkKV6UIB8y7KntsLOZvS1RC5bwIP1paqTP-_bT3N1UnDeWDZkUL-vlfNTinMutOqz_GQGR1wVim4hJ7mEauDgyZxUJR5GiLdTXGLo4-0I1MDfuI3j4CLCvgt1YFgKikfiONZFzFL6vlJY0MwAU6ytGvJKJ1EZqozs4rbhBnLMpe6wCIglvITAXlSw",
       refresh_token:
         "eyJraWQiOiJvNFhRbVNLTHlLN1I0ejhDUWRLaVNDQVQ4ZmhnWFlNVWRLUUlUU0Rra2xJIiwiYWxnIjoiUlMyNTYiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJodHRwczovL3N0YWdlLWlkZW50aXR5Lmh1YnN5bmNoLmNvbSIsImV4cCI6MTYxNDY5NTAzNSwiaWF0IjoxNjE0NjUxODM1LCJpc3MiOiJIdWJJZGVudGl0eSIsImp0aSI6ImU0ZWQ2ZGZjLTA1YjQtNGVlNS1iYmVlLTY1NjA3YmM4N2EwNCIsIm5iZiI6MTYxNDY1MTgzNCwic3ViIjoiSWRlbnRpdGllcy5Vc2VyOjM4MDU0OWQxLWNmOWEtNGJjYi1iNjcxLWEyNjY3ZThkMjMwMSIsInR5cCI6InJlZnJlc2gifQ.bboodWqsiq8ErLcT0puF0ZYfyyjrtY_NY7LMilTNaAigzMud-KxQN-P6W6pZYm2qYTtb5JtabrA0KAEY5Q81XWMQta2Ard52uc9Eezw9JHZ03Mbiqw3vSPz71L4z7YBxEhGWmmrPd7ReeKcc3ImdX-lk2KouaVEiB3Ur17YweO0Eq8vx4-8rSEqKvwn7ibuGA8FotY7CWsvPZlUMsm7B__jyRdeuQ6qy1cfNauSM-SbjvVIRs3WCn0DMkCdAenO8S6HKvueDSAW8-wEwHqcum7Soex409D9Cjh0JUgf7eGfz2xXsPyFt22h0eDAMZT9fZsxjki1a_3FRvaUDzVpIig"
+    }
+  end
+
+  defp email(address) do
+    %{
+      "Object" => "Email",
+      "address" => address,
+      "confirmed_at" => "2021-04-07T02:52:31Z",
+      "primary" => false,
+      "uid" => "81b7d2ef-43ef-42f8-922d-62602eac518a"
     }
   end
 
@@ -90,6 +158,21 @@ defmodule HubIdentityElixir.MockServer do
 
   defp token_response do
     {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(tokens())}}
+  end
+
+  defp email_response(address) do
+    {:ok, %HTTPoison.Response{status_code: 200, body: Jason.encode!(email(address))}}
+  end
+
+  defp verification_response() do
+    {:ok, %HTTPoison.Response{status_code: 202, body: "successful operation"}}
+  end
+
+  defp validation_response(code) do
+    case code do
+      1122 -> {:ok, %HTTPoison.Response{status_code: 202, body: "verification success"}}
+      _ -> {:ok, %HTTPoison.Response{status_code: 400, body: "{\"error\":\"verification failed\"}"}}
+    end
   end
 
   defp fail_response do

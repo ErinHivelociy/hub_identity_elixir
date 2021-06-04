@@ -18,10 +18,10 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.authenticate(%{email: "erin@hivelocity.co.jp", password: "password"})
+      iex> HubIdentityElixir.HubIdentity.authenticate(%{email: "erin@hivelocity.co.jp", password: "password"})
       {:ok, %{"access_token" => access_token, "refresh_token" => refresh_token}}
 
-      iex> HubIdentityElixir.authenticate(%{email: "erin@hivelocity.co.jp", password: "wrong"})
+      iex> HubIdentityElixir.HubIdentity.authenticate(%{email: "erin@hivelocity.co.jp", password: "wrong"})
       {:error, "bad request"}
 
   """
@@ -36,7 +36,7 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.get_certs()
+      iex> HubIdentityElixir.HubIdentity.get_certs()
       [
           {
               "alg": "RS256",
@@ -59,7 +59,7 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.get_certs("C8Rn3J8tPlMp8etztCsb4k51sjTFXbA-Til9XptF2FM")
+      iex> HubIdentityElixir.HubIdentity.get_certs("C8Rn3J8tPlMp8etztCsb4k51sjTFXbA-Til9XptF2FM")
         {
             "alg": "RS256",
             "e": "AQAB",
@@ -87,16 +87,14 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.parse_token(%{"access_token" => access JWT})
+      iex> HubIdentityElixir.HubIdentity.parse_token(%{"access_token" => access JWT})
       {:ok, %{
-          owner_type: "Hubsynch.User",
-          owner_uid: "uid_1234",
           uid: "hub_identity_uid_1234",
           user_type: "HubIdentity.User"
         }
       }
 
-      iex> HubIdentityElixir.parse_token(%{"access_token" => invalid JWT})
+      iex> HubIdentityElixir.HubIdentity.parse_token(%{"access_token" => invalid JWT})
       {:error, :claims_parse_fail}
 
   """
@@ -112,7 +110,7 @@ defmodule HubIdentityElixir.HubIdentity do
 
   ## Examples
 
-      iex> HubIdentityElixir.get_providers()
+      iex> HubIdentityElixir.HubIdentity.get_providers()
       [
           {
               "logo_url": "https://stage-identity.hubsynch.com/images/facebook.png",
@@ -124,17 +122,4 @@ defmodule HubIdentityElixir.HubIdentity do
   def get_providers, do: Server.get_providers()
 
   def hub_identity_url, do: Server.base_url()
-
-  def build_current_user(%{"access_token" => access_token, "refresh_token" => refresh_token}) do
-    with {:ok, user_params} <- Token.parse(access_token) do
-      current_user = Map.put(user_params, :refresh_token, refresh_token)
-      {:ok, current_user}
-    end
-  end
-
-  def build_current_user(%{"access_token" => access_token}) do
-    with {:ok, current_user} <- Token.parse(access_token) do
-      {:ok, current_user}
-    end
-  end
 end
