@@ -123,16 +123,16 @@ defmodule HubIdentityElixir.HubIdentity do
 
   def hub_identity_url, do: Server.base_url()
 
-  def build_current_user(%{"access_token" => access_token, "refresh_token" => refresh_token}) do
-    with {:ok, user_params} <- Token.parse(access_token) do
-      current_user = Map.put(user_params, :refresh_token, refresh_token)
-      {:ok, current_user}
-    end
-  end
+  # def build_current_user(%{"access_token" => access_token, "refresh_token" => refresh_token}) do
+  #   with {:ok, user_params} <- Token.parse(access_token) do
+  #     current_user = Map.put(user_params, :refresh_token, refresh_token)
+  #     {:ok, current_user}
+  #   end
+  # end
 
-  def build_current_user(%{"access_token" => access_token}) do
-    with {:ok, current_user} <- Token.parse(access_token) do
-      {:ok, current_user}
-    end
-  end
+  # def build_current_user(%{"access_token" => access_token}) do
+  #   with {:ok, current_user} <- Token.parse(access_token) do
+  #     {:ok, current_user}
+  #   end
+  # end
 end
