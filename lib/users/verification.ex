@@ -1,4 +1,4 @@
-defmodule HubIdentityElixir.HubIdentity.Verification do
+defmodule HubIdentityElixir.Users.Verification do
   alias HubIdentityElixir.HubIdentity.Server
 
   def create(uid, reference) do
@@ -10,6 +10,9 @@ defmodule HubIdentityElixir.HubIdentity.Verification do
   end
 
   def renew(uid, old_reference, new_reference) do
-    Server.post("/users/#{uid}/verification/renew", %{old_reference: old_reference, new_reference: new_reference})
+    Server.post("/users/#{uid}/verification/renew", %{
+      old_reference: old_reference,
+      new_reference: new_reference
+    })
   end
 end

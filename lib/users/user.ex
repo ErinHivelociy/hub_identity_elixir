@@ -1,4 +1,4 @@
-defmodule HubIdentityElixir.HubIdentity.User do
+defmodule HubIdentityElixir.Users.User do
   alias HubIdentityElixir.HubIdentity.Server
 
   def create(email, password) do
