@@ -1,4 +1,4 @@
-defmodule HubIdentityElixir.HubIdentity.Verification do
+defmodule HubIdentityElixir.HubIdentity.Users.Verification do
   alias HubIdentityElixir.HubIdentity.Server
 
   def create(uid, reference) do

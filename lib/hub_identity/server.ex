@@ -71,6 +71,9 @@ defmodule HubIdentityElixir.HubIdentity.Server do
   defp parse_response({:ok, %HTTPoison.Response{status_code: 401, body: message}}),
     do: {:error, message}
 
+  defp parse_response({:ok, %HTTPoison.Response{status_code: 202, body: message}}),
+    do: {:ok, message}
+
   defp parse_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}) do
     body
     |> Jason.decode()

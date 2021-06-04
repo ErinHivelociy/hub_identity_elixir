@@ -8,7 +8,8 @@ defmodule HubIdentityElixir.HubIdentity do
   through [Hivelocity](https://www.hivelocity.co.jp/contact/).
   """
 
-  alias HubIdentityElixir.HubIdentity.{Email, Server, Token, Verification}
+  alias HubIdentityElixir.HubIdentity.Users.{Email, Verification}
+  alias HubIdentityElixir.HubIdentity.{Server, Token}
 
   @doc """
   Authenticate with HubIdentity using an email and password. This will call the HubIdentity
@@ -169,10 +170,22 @@ defmodule HubIdentityElixir.HubIdentity do
   ## Examples
 
       iex> HubIdentityElixir.HubIdentity.add_user_email(user_uid, address)
-        body: "{\"success\":\"email verification request sent\"}"
+      {:ok, %HTTPoison{body: "{\"success\":\"email verification request sent\"}"}}
   """
   def add_user_email(user_uid, address) do
     Email.create(user_uid, address)
+  end
+
+  @doc """
+  Remove a users email.
+
+  ## Examples
+
+      iex> HubIdentityElixir.HubIdentity.remove_user_email(user_uid, email_uid)
+      {:ok, %HTTPoison{body: "{\"success\":\"email email_uid deleted\"}"}}
+  """
+  def remove_user_email(user_uid, email_uid) do
+    Email.delete(user_uid, email_uid)
   end
 
   @doc """
@@ -182,7 +195,7 @@ defmodule HubIdentityElixir.HubIdentity do
   ## Examples
 
       iex> HubIdentityElixir.HubIdentity.send_verification(user_uid, reference)
-        body: "successful operation"
+      {:ok, %HTTPoison{body: "successful operation"}}
   """
   def send_verification(user_uid, reference) do
     Verification.create(user_uid, reference)
@@ -209,7 +222,7 @@ defmodule HubIdentityElixir.HubIdentity do
   ## Examples
 
       iex> HubIdentityElixir.HubIdentity.renew_verification_code(user_uid, old_reference, new_reference)
-        body: "successful operation"
+      {:ok, %HTTPoison{body: "successful operation"}}
   """
   def renew_verification_code(user_uid, old_reference, new_reference) do
     Verification.renew(user_uid, old_reference, new_reference)
