@@ -36,10 +36,20 @@ defmodule HubIdentityElixir.Users do
   ## Examples
 
       iex> HubIdentityElixir.User.add_email(user_uid, address)
-        body: "{\"success\":\"email verification request sent\"}"
+        {:ok, %HTTPoison{body: "{\"success\":\"email verification request sent\"}"}
   """
   def add_email(user_uid, address) do
     Email.create(user_uid, address)
+  end
+
+  @doc """
+  Remove a users email.
+  ## Examples
+      iex> HubIdentityElixir.HubIdentity.remove_user_email(user_uid, email_uid)
+      {:ok, %HTTPoison{body: "{\"success\":\"email email_uid deleted\"}"}}
+  """
+  def remove_email(user_uid, email_uid) do
+    Email.delete(user_uid, email_uid)
   end
 
   @doc """
@@ -49,7 +59,7 @@ defmodule HubIdentityElixir.Users do
   ## Examples
 
       iex> HubIdentityElixir.User.send_verification(user_uid, reference)
-        body: "successful operation"
+        {:ok, %HTTPoison{body: "successful operation"}
   """
   def send_verification(user_uid, reference) do
     Verification.create(user_uid, reference)
@@ -78,7 +88,7 @@ defmodule HubIdentityElixir.Users do
   ## Examples
 
       iex> HubIdentityElixir.User.renew_verification_code(user_uid, old_reference, new_reference)
-        body: "successful operation"
+        {:ok, %HTTPoison{body: "successful operation"}
   """
   def renew_verification_code(user_uid, old_reference, new_reference) do
     Verification.renew(user_uid, old_reference, new_reference)

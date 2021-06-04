@@ -8,4 +8,8 @@ defmodule HubIdentityElixir.Users.Email do
   def get(uid) do
     Server.get("/users/#{uid}/emails")
   end
+
+  def delete(user_uid, email_uid) do
+    Server.delete("/users/#{user_uid}/emails/#{email_uid}")
+  end
 end
